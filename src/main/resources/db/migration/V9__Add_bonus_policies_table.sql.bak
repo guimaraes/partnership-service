@@ -1,0 +1,35 @@
+-- Criar tabela de políticas de bônus
+CREATE TABLE bonus_policies (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    type VARCHAR(50) NOT NULL,
+    threshold_clients INT,
+    revenue_threshold DECIMAL(10,2),
+    bonus_amount DECIMAL(10,2) NOT NULL,
+    effective_from DATE NOT NULL,
+    effective_to DATE,
+    status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
+);
+
+-- Adicionar índices para otimizar consultas
+CREATE INDEX idx_bonus_policies_type_effective 
+ON bonus_policies (type, effective_from, effective_to, status);
+
+CREATE INDEX idx_bonus_policies_status_effective 
+ON bonus_policies (status, effective_from, effective_to);
+
+-- Inserir políticas de exemplo
+INSERT INTO bonus_policies (name, description, type, threshold_clients, bonus_amount, effective_from, status) VALUES
+('BONUS_CLIENTES_ATIVOS', 'Bônus por número de clientes ativos', 'CLIENT_COUNT', 10, 300.00, '2025-10-01', 'ACTIVE'),
+('BONUS_FATURAMENTO', 'Bônus por faturamento agregado', 'REVENUE_THRESHOLD', NULL, 500.00, '2025-10-01', 'ACTIVE');
+
+-- Adicionar constraint para garantir que pelo menos um threshold seja definido
+ALTER TABLE bonus_policies 
+ADD CONSTRAINT chk_bonus_policy_threshold 
+CHECK (
+    (type = 'CLIENT_COUNT' AND threshold_clients IS NOT NULL) OR
+    (type = 'REVENUE_THRESHOLD' AND revenue_threshold IS NOT NULL)
+);

@@ -1,0 +1,6 @@
+name,email,phone,document,partnerId,clientType,monthlyBilling
+Cliente A,cliente.a@email.com,11988888888,98765432101,P-1001,TYPE_1,5000.00
+Cliente B,cliente.b@email.com,11988888887,98765432102,P-1001,TYPE_2,8000.00
+Cliente C,cliente.c@email.com,11988888886,98765432103,P-1002,TYPE_1,3000.00
+Cliente D,cliente.d@email.com,11988888885,98765432104,P-1002,TYPE_3,12000.00
+Cliente E,cliente.e@email.com,11988888884,98765432105,P-1003,TYPE_1,6000.00

@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: partnership-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: partnership_db
+      MYSQL_USER: partnership
+      MYSQL_PASSWORD: partnership
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - partnership-network
+
+  partnership-service:
+    build: .
+    container_name: partnership-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/partnership_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: partnership
+      SPRING_DATASOURCE_PASSWORD: partnership
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - partnership-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  partnership-network:
+    driver: bridge
